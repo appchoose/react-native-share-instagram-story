@@ -1,6 +1,6 @@
 {
   "name": "react-native-share-instagram-story",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sharing video to Instagram Story",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
