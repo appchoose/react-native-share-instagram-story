@@ -15,7 +15,7 @@ import ShareInstagramStory from "react-native-share-instagram-story";
 
 // ...
 
-const result = await ShareInstagramStory.multiply(3, 7);
+const result = await shareBackgroundVideo (attributionURL: string, appID: string, url: string);
 ```
 
 ## Contributing

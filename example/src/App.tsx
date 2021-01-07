@@ -10,8 +10,8 @@ export default function App () {
     try {
       const res = await ShareInstagramStory.shareBackgroundVideo(
         'https://appchoose.io',
-        '17841402064409287',
-        'https://images-f5ljwmnzga-ew.a.run.app/referral_video?name=titithebest');
+        'APP_ID',
+        'Background url');
       setRes(res)
     } catch (e) {
       setRes(e)

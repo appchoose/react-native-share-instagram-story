@@ -25,7 +25,12 @@ public class ShareInstagramStoryModule  extends ReactContextBaseJavaModule {
   public static final String INVALID_PARAMETER = "Invalid parameter";
   private  static final String MEDIA_TYPE_JPEG = "image/*";
 
-
+  private static final int IMAGE_PICKER_REQUEST = 1;
+  private static final String E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST";
+  private static final String E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
+  private static final String E_FAILED_TO_SHOW_PICKER = "E_FAILED_TO_SHOW_PICKER";
+  private static final String E_NO_IMAGE_DATA_FOUND = "E_NO_IMAGE_DATA_FOUND";
+ private Promise mPickerPromise;
  public ShareInstagramStoryModule(ReactApplicationContext reactContext) {
     super(reactContext);
   }
@@ -47,32 +52,31 @@ public class ShareInstagramStoryModule  extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void shareBackgroundVideo(String attributionLinkUrl, String appId, String uri , Promise promise) {
-    try {
-      Uri backgroundAssetUri = Uri.parse(uri);
+        Activity currentActivity = getCurrentActivity();
 
-      // Instantiate implicit intent with ADD_TO_STORY action,
-      // background asset, and attribution link
-     Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
-      intent.putExtra("source_application", "com.appchoose.choose.android");
-      intent.setDataAndType(backgroundAssetUri, "video/*");
-      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      intent.putExtra("content_url", attributionLinkUrl);
+    if (currentActivity == null) {
+      promise.reject(E_ACTIVITY_DOES_NOT_EXIST, "Activity doesn't exist");
+      return;
+    }
 
-      // Instantiate activity and verify it will resolve implicit intent
-      Activity activity = getCurrentActivity();
-if (activity.getPackageManager().resolveActivity(intent, 0) != null) {
-  activity.startActivityForResult(intent, 0);
- promise.resolve("ok");
-}else{
-        promise.resolve("cannot open");
-}
+    // Store the promise to resolve/reject when picker returns data
+    mPickerPromise = promise;
 
-    } catch(ActivityNotFoundException ex) {
-        System.out.println("ERROR");
-        System.out.println(ex.getMessage());
-           promise.resolve("cannot share");
+
+      final Intent galleryIntent = new Intent("com.instagram.share.ADD_TO_STORY");
+Uri backgroundAssetUri = Uri.parse(uri);
+galleryIntent.putExtra("source_application", "com.appchoose.choose.android");
+
+      galleryIntent.setDataAndType(backgroundAssetUri,"video/*");
+galleryIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+galleryIntent.putExtra("content_url", attributionLinkUrl);
+      final Intent chooserIntent = Intent.createChooser(galleryIntent, "Pick an image");
+
+
+ try {
+      currentActivity.startActivityForResult(chooserIntent, 0);
+    } catch (Exception e) {
+      mPickerPromise.resolve(e.getMessage());
     }
   }
-
-
 }

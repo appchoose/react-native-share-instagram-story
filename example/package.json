@@ -1,7 +1,11 @@
 {
   "name": "react-native-share-instagram-story-example",
   "description": "Example app for react-native-share-instagram-story",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "author": {
+    "name": "Choose",
+    "url": "https://appchoose.io"
+  },
   "private": true,
   "scripts": {
     "android": "react-native run-android",
